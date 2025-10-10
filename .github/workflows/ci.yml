@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-sqlite:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run pytest (SQLite)
+        run: |
+          pytest -q
+
+  test-mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: ai_education_assistant
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd "mysqladmin ping -ppassword --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h127.0.0.1 -ppassword --silent; then echo OK; break; fi; sleep 2; done
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Prepare DB schema
+        env:
+          MYSQL_PWD: password
+        run: |
+          mysql -h 127.0.0.1 -uroot -e "CREATE DATABASE IF NOT EXISTS ai_education_assistant CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+      - name: Run pytest (MySQL)
+        env:
+          TEST_DB: mysql
+          MYSQL_TEST_URL: mysql+pymysql://root:password@127.0.0.1:3306/ai_education_assistant?charset=utf8mb4
+        run: |
+          pytest -q
+
