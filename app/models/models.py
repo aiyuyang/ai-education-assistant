@@ -101,6 +101,7 @@ class StudyPlan(Base):
     difficulty_level = Column(String(20), nullable=True)
     estimated_duration = Column(Integer, nullable=True)
     is_public = Column(Boolean, default=False)
+    is_ai_generated = Column(Boolean, default=False, index=True)
     title = Column(String(100), nullable=False)
     description = Column(Text, nullable=True)
     status = Column(Enum(PlanStatus), nullable=False, default=PlanStatus.ONGOING, index=True)

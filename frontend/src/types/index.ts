@@ -47,6 +47,7 @@ export interface StudyPlan {
   difficulty_level: 'beginner' | 'intermediate' | 'advanced';
   estimated_duration: number;
   is_public: boolean;
+  is_ai_generated?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -119,16 +120,19 @@ export interface ConversationCreateRequest {
 export interface Message {
   id: number;
   conversation_id: number;
+  role: 'user' | 'assistant' | 'system';
   content: string;
-  message_type: 'user' | 'ai';
+  content_type: string;
   metadata_json?: any;
+  tokens_used?: number;
   created_at: string;
-  updated_at: string;
 }
 
 export interface MessageCreateRequest {
   content: string;
-  message_type: 'user' | 'ai';
+  role?: 'user' | 'assistant' | 'system';
+  content_type?: string;
+  metadata_json?: any;
 }
 
 // 认证状态类型

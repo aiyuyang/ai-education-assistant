@@ -1,7 +1,7 @@
 """
 Request models for API endpoints
 """
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, validator, root_validator
 from datetime import datetime, date
 
@@ -150,11 +150,15 @@ class ErrorLogUpdateRequest(BaseModel):
 class ConversationCreateRequest(BaseModel):
     """Conversation creation request"""
     title: Optional[str] = None
+    subject: Optional[str] = None
+    difficulty_level: Optional[str] = None
+    is_public: bool = False
 
 
 class MessageCreateRequest(BaseModel):
     """Message creation request"""
     content: str
+    role: Optional[str] = "user"
     content_type: str = "text"
     metadata_json: Optional[dict] = None
     
@@ -164,10 +168,61 @@ class MessageCreateRequest(BaseModel):
             raise ValueError('Message content cannot be empty')
         return v
     
+    @validator('role')
+    def validate_role(cls, v):
+        if v not in ['user', 'assistant', 'system']:
+            raise ValueError('Role must be user, assistant, or system')
+        return v
+    
     @validator('content_type')
     def validate_content_type(cls, v):
         if v not in ['text', 'image', 'file']:
             raise ValueError('Content type must be text, image, or file')
+        return v
+
+
+class StudyPlanGenerateRequest(BaseModel):
+    """AI study plan generation request"""
+    subject: str
+    time_frame: str
+    learning_goals: List[str]
+    current_level: str = "beginner"
+    study_hours_per_week: int = 10
+    
+    @validator('subject')
+    def validate_subject(cls, v):
+        if len(v) < 1 or len(v) > 50:
+            raise ValueError('Subject must be between 1 and 50 characters')
+        return v
+    
+    @validator('time_frame')
+    def validate_time_frame(cls, v):
+        if len(v) < 1 or len(v) > 100:
+            raise ValueError('Time frame must be between 1 and 100 characters')
+        return v
+    
+    @validator('learning_goals')
+    def validate_learning_goals(cls, v):
+        if not v or len(v) == 0:
+            raise ValueError('At least one learning goal is required')
+        if len(v) > 10:
+            raise ValueError('Maximum 10 learning goals allowed')
+        for goal in v:
+            if len(goal) < 1 or len(goal) > 200:
+                raise ValueError('Each learning goal must be between 1 and 200 characters')
+        return v
+    
+    @validator('current_level')
+    def validate_current_level(cls, v):
+        valid_levels = ['beginner', 'intermediate', 'advanced']
+        if v not in valid_levels:
+            raise ValueError(f'Current level must be one of: {", ".join(valid_levels)}')
+        return v
+    
+    @validator('study_hours_per_week')
+    def validate_study_hours(cls, v):
+        if v < 1 or v > 40:
+            raise ValueError('Study hours per week must be between 1 and 40')
         return v
 
 

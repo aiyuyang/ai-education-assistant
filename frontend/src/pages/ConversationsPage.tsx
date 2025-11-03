@@ -203,7 +203,7 @@ const ConversationsPage: React.FC = () => {
       conversationId: selectedConversation.id,
       data: {
         content: newMessage,
-        message_type: 'user'
+        role: 'user'
       }
     });
 
@@ -213,7 +213,7 @@ const ConversationsPage: React.FC = () => {
         conversationId: selectedConversation.id,
         data: {
           content: `我理解你的问题："${newMessage}"。这是一个很好的问题，让我来帮你分析一下...`,
-          message_type: 'ai'
+          role: 'assistant'
         }
       });
     }, 1000);
@@ -221,7 +221,7 @@ const ConversationsPage: React.FC = () => {
 
   const conversations = conversationsData?.data || [];
   const messages = messagesData?.data || [];
-  const stats = statsData?.data || { total_count: 0, subjects: {} };
+  const stats = statsData?.data || { total_conversations: 0, subjects: {} };
 
   return (
     <div>
@@ -243,7 +243,7 @@ const ConversationsPage: React.FC = () => {
           <Card>
             <Statistic
               title="总对话数"
-              value={stats.total_count}
+              value={stats.total_conversations || 0}
               prefix={<MessageOutlined />}
             />
           </Card>
@@ -269,8 +269,8 @@ const ConversationsPage: React.FC = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="学科数量"
-              value={Object.keys(stats.subjects).length}
+              title="总消息数"
+              value={stats.total_messages || 0}
               prefix={<MessageOutlined />}
             />
           </Card>
@@ -365,7 +365,7 @@ const ConversationsPage: React.FC = () => {
                         <List.Item style={{ border: 'none', padding: '8px 0' }}>
                           <div style={{ 
                             display: 'flex', 
-                            justifyContent: message.message_type === 'user' ? 'flex-end' : 'flex-start',
+                            justifyContent: message.role === 'user' ? 'flex-end' : 'flex-start',
                             width: '100%',
                             padding: '4px 0'
                           }}>
@@ -373,16 +373,16 @@ const ConversationsPage: React.FC = () => {
                               maxWidth: '70%',
                               padding: '12px 16px',
                               borderRadius: '12px',
-                              backgroundColor: message.message_type === 'user' ? '#1890ff' : '#f0f0f0',
-                              color: message.message_type === 'user' ? 'white' : 'black'
+                              backgroundColor: message.role === 'user' ? '#1890ff' : '#f0f0f0',
+                              color: message.role === 'user' ? 'white' : 'black'
                             }}>
                               <Space>
-                                {message.message_type === 'user' ? (
+                                {message.role === 'user' ? (
                                   <UserOutlined />
                                 ) : (
                                   <RobotOutlined />
                                 )}
-                                <Text style={{ color: message.message_type === 'user' ? 'white' : 'black' }}>
+                                <Text style={{ color: message.role === 'user' ? 'white' : 'black' }}>
                                   {message.content}
                                 </Text>
                               </Space>

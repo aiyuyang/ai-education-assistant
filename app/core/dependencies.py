@@ -141,4 +141,4 @@ class RateLimiter:
 # Common rate limiters
 rate_limit_60_per_minute = RateLimiter(requests=60, window=60)
 rate_limit_10_per_minute = RateLimiter(requests=10, window=60)
-rate_limit_5_per_minute = RateLimiter(requests=5, window=60)
+rate_limit_5_per_minute = RateLimiter(requests=20, window=60)  # 临时增加到20次

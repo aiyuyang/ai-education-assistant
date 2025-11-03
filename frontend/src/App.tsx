@@ -12,6 +12,7 @@ import StudyPlansPage from './pages/StudyPlansPage';
 import ErrorLogsPage from './pages/ErrorLogsPage';
 import ConversationsPage from './pages/ConversationsPage';
 import ProfilePage from './pages/ProfilePage';
+import AIStudyPlanPage from './pages/AIStudyPlanPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 
@@ -45,6 +46,7 @@ const App: React.FC = () => {
                       <Routes>
                         <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/study-plans" element={<StudyPlansPage />} />
+                        <Route path="/ai-study-plan" element={<AIStudyPlanPage />} />
                         <Route path="/error-logs" element={<ErrorLogsPage />} />
                         <Route path="/conversations" element={<ConversationsPage />} />
                         <Route path="/profile" element={<ProfilePage />} />

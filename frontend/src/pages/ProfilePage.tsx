@@ -55,9 +55,10 @@ const ProfilePage: React.FC = () => {
       onSuccess: (response) => {
         message.success('个人信息更新成功');
         setIsEditing(false);
-        // 触发相关数据的刷新（若有对应的 query key）
-        try { queryClient.invalidateQueries('userStats'); } catch {}
-        try { queryClient.invalidateQueries('userProfile'); } catch {}
+        // 刷新用户相关数据
+        queryClient.invalidateQueries('currentUser');
+        queryClient.invalidateQueries('userStats');
+        queryClient.invalidateQueries('userProfile');
       },
       onError: (error: any) => {
         message.error(error.response?.data?.message || '更新失败');

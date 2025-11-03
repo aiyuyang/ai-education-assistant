@@ -22,7 +22,7 @@ class ApiService {
   constructor() {
     this.api = axios.create({
       baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1',
-      timeout: 10000,
+      timeout: 60000,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -204,6 +204,17 @@ class ApiService {
 
   async getConversationStats(): Promise<ApiResponse<any>> {
     const response: AxiosResponse<ApiResponse<any>> = await this.api.get('/conversations/stats/summary');
+    return response.data;
+  }
+
+  // AI学习计划生成相关API
+  async generateAIStudyPlan(planData: any): Promise<ApiResponse<any>> {
+    const response: AxiosResponse<ApiResponse<any>> = await this.api.post('/study-plans/generate', planData);
+    return response.data;
+  }
+
+  async getStudyPlansList(params?: { status?: string; subject?: string; page?: number; per_page?: number }): Promise<ApiResponse<StudyPlan[]>> {
+    const response: AxiosResponse<ApiResponse<StudyPlan[]>> = await this.api.get('/study-plans/list', { params });
     return response.data;
   }
 }

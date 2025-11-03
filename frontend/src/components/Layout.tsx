@@ -9,7 +9,8 @@ import {
   LogoutOutlined,
   SettingOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined
+  MenuUnfoldOutlined,
+  RobotOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -37,6 +38,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       key: '/study-plans',
       icon: <BookOutlined />,
       label: '学习计划',
+    },
+    {
+      key: '/ai-study-plan',
+      icon: <RobotOutlined />,
+      label: 'AI学习计划生成',
     },
     {
       key: '/error-logs',

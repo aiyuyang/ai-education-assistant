@@ -151,6 +151,60 @@
       * 一个`User`可以拥有多个`StudyPlan`、多个`ErrorLog`、多个`Conversation`（一对多）。
       * 一个`Conversation`包含多条`Message`（一对多）。
 
+#### ER图
+
+```mermaid
+erDiagram
+    USERS {
+        bigint id PK "主键"
+        varchar username UK "用户名(唯一)"
+        varchar password_hash "密码哈希"
+        varchar email UK "邮箱(唯一)"
+        varchar nickname "昵称"
+        varchar avatar_url "头像链接"
+        datetime created_at "创建时间"
+        datetime updated_at "更新时间"
+    }
+    
+    STUDY_PLANS {
+        bigint id PK "主键"
+        bigint user_id FK "用户ID"
+        varchar title "计划标题"
+        enum status "计划状态(ongoing/completed/archived)"
+        datetime created_at "创建时间"
+    }
+    
+    ERROR_LOGS {
+        bigint id PK "主键"
+        bigint user_id FK "用户ID"
+        text question_content "问题内容"
+        text correct_answer "正确答案"
+        enum status "解决状态(unresolved/resolved)"
+        datetime created_at "创建时间"
+    }
+    
+    CONVERSATIONS {
+        bigint id PK "主键"
+        bigint user_id FK "用户ID"
+        varchar title "会话标题"
+        datetime created_at "创建时间"
+    }
+    
+    MESSAGES {
+        bigint id PK "主键"
+        bigint conversation_id FK "会话ID"
+        enum role "角色(user/assistant)"
+        text content "消息内容"
+        datetime created_at "创建时间"
+    }
+    
+    %% 关系定义
+    USERS ||--o{ STUDY_PLANS : "拥有"
+    USERS ||--o{ ERROR_LOGS : "记录"
+    USERS ||--o{ CONVERSATIONS : "创建"
+    CONVERSATIONS ||--o{ MESSAGES : "包含"
+```
+
 ### 5.2 物理模型 (DDL)
 
 ```sql

@@ -40,3 +40,6 @@ flake8==3.9.2
 
 # Logging
 loguru==0.5.3
+
+# Google Gemini AI
+google-generativeai>=0.3.0

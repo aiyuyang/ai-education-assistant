@@ -65,8 +65,8 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description="AI Education Assistant Backend API",
-    docs_url="/docs" if settings.debug else None,
-    redoc_url="/redoc" if settings.debug else None,
+    docs_url="/docs",
+    redoc_url="/redoc",
     lifespan=lifespan
 )
 

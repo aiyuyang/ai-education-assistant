@@ -198,6 +198,16 @@ const StudyPlansPage: React.FC = () => {
       ),
     },
     {
+      title: '类型',
+      dataIndex: 'is_ai_generated',
+      key: 'is_ai_generated',
+      render: (isAiGenerated: boolean) => (
+        <Tag color={isAiGenerated ? 'purple' : 'blue'}>
+          {isAiGenerated ? 'AI生成' : '手动创建'}
+        </Tag>
+      ),
+    },
+    {
       title: '公开',
       dataIndex: 'is_public',
       key: 'is_public',

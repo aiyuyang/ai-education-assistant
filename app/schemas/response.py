@@ -1,7 +1,7 @@
 """
 Response models for API endpoints
 """
-from typing import Any, Optional, Generic, TypeVar
+from typing import Any, Optional, Generic, TypeVar, List
 from pydantic import BaseModel
 
 T = TypeVar('T')
@@ -70,11 +70,49 @@ class StudyPlanResponse(BaseModel):
     difficulty_level: Optional[str] = None
     estimated_duration: Optional[int] = None
     is_public: Optional[bool] = None
+    is_ai_generated: Optional[bool] = None
     status: str
     start_date: Optional[str] = None
     end_date: Optional[str] = None
     created_at: str
     updated_at: str
+
+
+class StudyTaskResponse(BaseModel):
+    """Study task response model"""
+    title: str
+    description: str
+    estimated_hours: int
+    priority: str
+    resources: List[str]
+
+
+class WeeklyScheduleResponse(BaseModel):
+    """Weekly schedule response model"""
+    week: int
+    focus: str
+    tasks: List[StudyTaskResponse]
+
+
+class MilestoneResponse(BaseModel):
+    """Milestone response model"""
+    week: int
+    milestone: str
+    assessment: str
+
+
+class AIStudyPlanResponse(BaseModel):
+    """AI generated study plan response model"""
+    plan_title: str
+    overview: str
+    learning_objectives: List[str]
+    weekly_schedule: List[WeeklyScheduleResponse]
+    milestones: List[MilestoneResponse]
+    resources: List[str]
+    tips: List[str]
+    generated_at: str
+    tokens_used: Optional[int] = None
+    saved_plan_id: Optional[int] = None
 
 
 class ErrorLogResponse(BaseModel):
@@ -101,6 +139,9 @@ class ConversationResponse(BaseModel):
     id: int
     user_id: int
     title: str
+    subject: Optional[str] = None
+    difficulty_level: Optional[str] = None
+    is_public: bool = False
     summary: Optional[str] = None
     is_active: bool
     created_at: str

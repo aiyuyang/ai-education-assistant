@@ -3,6 +3,10 @@ Core configuration module for AI Education Assistant
 """
 import os
 from typing import List, Optional
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 class Settings:
@@ -11,7 +15,7 @@ class Settings:
     # Application
     app_name: str = "AI Education Assistant"
     app_version: str = "1.0.0"
-    debug: bool = False
+    debug: bool = True
     host: str = "0.0.0.0"
     port: int = 8000
     
@@ -35,7 +39,11 @@ class Settings:
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
     
-    # External AI Service
+    # External AI Service (Gemini)
+    gemini_api_key: str = "AIzaSyCDOFb2I_-8CgYirI5df3Nyf-xzA7tHEGE"
+    gemini_model: str = "gemini-2.5-flash"
+    
+    # Legacy OpenAI settings (kept for compatibility)
     openai_api_key: Optional[str] = None
     openai_base_url: str = "https://api.openai.com/v1"
     openai_model: str = "gpt-3.5-turbo"
@@ -84,10 +92,24 @@ class Settings:
         self.algorithm = os.getenv("ALGORITHM", self.algorithm)
         self.access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", self.access_token_expire_minutes))
         
-        # External AI Service
+        # External AI Service (Gemini)
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY", self.gemini_api_key)
+        self.gemini_model = os.getenv("GEMINI_MODEL", self.gemini_model)
+        
+        # Legacy OpenAI settings
         self.openai_api_key = os.getenv("OPENAI_API_KEY", self.openai_api_key)
         self.openai_base_url = os.getenv("OPENAI_BASE_URL", self.openai_base_url)
         self.openai_model = os.getenv("OPENAI_MODEL", self.openai_model)
+        
+        # CORS
+        cors_origins_env = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:3001,http://localhost:8080,http://localhost:7791")
+        self.cors_origins = cors_origins_env.split(",") if cors_origins_env else self.cors_origins
+        
+        cors_methods_env = os.getenv("CORS_METHODS", "GET,POST,PUT,DELETE,PATCH")
+        self.cors_methods = cors_methods_env.split(",") if cors_methods_env else self.cors_methods
+        
+        cors_headers_env = os.getenv("CORS_HEADERS", "*")
+        self.cors_headers = cors_headers_env.split(",") if cors_headers_env else self.cors_headers
 
 
 # Global settings instance

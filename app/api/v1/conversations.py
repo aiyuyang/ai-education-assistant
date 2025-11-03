@@ -38,6 +38,9 @@ async def create_conversation(
     conversation = Conversation(
         user_id=current_user.id,
         title=conversation_data.title or "New Conversation",
+        subject=conversation_data.subject,
+        difficulty_level=conversation_data.difficulty_level,
+        is_public=conversation_data.is_public,
         is_active=True
     )
     
@@ -52,6 +55,9 @@ async def create_conversation(
             id=conversation.id,
             user_id=conversation.user_id,
             title=conversation.title,
+            subject=conversation.subject,
+            difficulty_level=conversation.difficulty_level,
+            is_public=conversation.is_public,
             summary=conversation.summary,
             is_active=conversation.is_active,
             created_at=conversation.created_at.isoformat(),
@@ -83,6 +89,9 @@ async def get_my_conversations(
             id=conv.id,
             user_id=conv.user_id,
             title=conv.title,
+            subject=conv.subject,
+            difficulty_level=conv.difficulty_level,
+            is_public=conv.is_public,
             summary=conv.summary,
             is_active=conv.is_active,
             created_at=conv.created_at.isoformat(),
@@ -234,9 +243,15 @@ async def create_message(
         raise ValidationError(f"Maximum messages limit ({max_messages}) reached for this conversation")
     
     # Create message
+    # Map role string to MessageRole enum
+    role_map = {
+        'user': MessageRole.USER,
+        'assistant': MessageRole.ASSISTANT,
+        'system': MessageRole.SYSTEM
+    }
     message = Message(
         conversation_id=conversation_id,
-        role=MessageRole.USER,
+        role=role_map.get(message_data.role, MessageRole.USER),
         content=message_data.content,
         content_type=ContentType(message_data.content_type),
         metadata_json=message_data.metadata_json
